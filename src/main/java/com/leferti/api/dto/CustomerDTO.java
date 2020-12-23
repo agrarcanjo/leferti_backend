@@ -11,5 +11,7 @@ public class CustomerDTO {
 
 	private String email;
 	private String name;
-	private String pass;
+	private String cpf;
+	private String phone;
+	private Long id;
 }

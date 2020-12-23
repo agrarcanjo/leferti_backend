@@ -28,7 +28,10 @@ public class Customer {
 	private String email;
 
 	@Column(name = "phone")
-	private Integer phone;
+	private String phone;
+
+	@Column(name = "cpf")
+	private String cpf;
 	
 	@Column(name = "pass")
 	@JsonIgnore

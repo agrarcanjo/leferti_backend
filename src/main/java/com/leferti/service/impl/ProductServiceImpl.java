@@ -6,6 +6,7 @@ import com.leferti.model.repository.ProductRepository;
 import com.leferti.service.ProductService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +53,9 @@ public class ProductServiceImpl implements ProductService {
         Example example = Example.of( product,
                 ExampleMatcher.matching()
                         .withIgnoreCase()
-                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING) );
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
-        return repository.findAll(example);
+        return repository.findAll(example, Sort.by(Sort.Direction.DESC, "dateRegister"));
     }
 
     @Override

@@ -7,12 +7,12 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class SpendingDTO {
     private Long id;
     private String name;
-    private String price;
-    private String cost;
     private String description;
-    private String qnt;
+    private String price;
+    private String dateRegister;
+    private Integer amount;
 
 }

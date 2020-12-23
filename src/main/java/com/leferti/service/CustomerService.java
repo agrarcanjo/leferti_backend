@@ -2,6 +2,7 @@ package com.leferti.service;
 
 import com.leferti.model.entity.Customer;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomerService {
@@ -13,5 +14,7 @@ public interface CustomerService {
 	void validateEmail(String email);
 
 	Optional<Customer> findById(Long id);
-	
+
+	List<Customer> find(Customer customer);
+
 }

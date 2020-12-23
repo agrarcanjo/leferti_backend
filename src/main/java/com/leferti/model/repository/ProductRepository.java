@@ -1,6 +1,5 @@
 package com.leferti.model.repository;
 
-import com.leferti.model.entity.Customer;
 import com.leferti.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 

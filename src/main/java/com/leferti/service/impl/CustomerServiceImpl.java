@@ -5,9 +5,12 @@ import com.leferti.exception.RegraNegocioException;
 import com.leferti.model.entity.Customer;
 import com.leferti.model.repository.CustomerRepository;
 import com.leferti.service.CustomerService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +47,10 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void validateEmail(String email) {
+		if(email == null || email.trim().equals("")) {
+			throw new RegraNegocioException("E-mail Obrigatório");
+		}
+
 		boolean existe = repository.existsByEmail(email);
 		if(existe) {
 			throw new RegraNegocioException("Já existe um usuário cadastrado com este email.");
@@ -54,5 +61,17 @@ public class CustomerServiceImpl implements CustomerService {
 	public Optional<Customer> findById(Long id) {
 		return repository.findById(id);
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Customer> find(Customer customer){
+		Example example = Example.of( customer,
+				ExampleMatcher.matching()
+						.withIgnoreCase()
+						.withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING) );
+
+		return repository.findAll(example);
+	}
+
 
 }

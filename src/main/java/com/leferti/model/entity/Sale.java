@@ -1,9 +1,6 @@
 package com.leferti.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
@@ -13,8 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "sale", schema = "leferti")
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sale {
@@ -30,11 +27,14 @@ public class Sale {
 	@Column(name = "discount")
 	private BigDecimal discount;
 
-	@ManyToOne
-	@JoinColumn(name = "id_customer")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_customer", updatable = false, insertable = false)
 	private Customer customer;
 
-	@OneToMany
+	@Column(name = "id_customer")
+	private Long idCustomer;
+
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_sale_items")
 	private List<SaleItems> saleItems;
 
@@ -42,5 +42,6 @@ public class Sale {
 	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
 	private LocalDate dateRegister;
 
-
-}
+	@Column(name = "debt")
+	private Boolean debt;
+ }

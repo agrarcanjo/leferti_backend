@@ -1,10 +1,10 @@
 package com.leferti.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
@@ -13,12 +13,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "product", schema = "leferti")
+@Table(name = "spending", schema = "leferti")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Spending {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,22 +34,13 @@ public class Product {
 	@Column(name = "price")
 	private BigDecimal price;
 
-	@Column(name = "cost")
-	private BigDecimal cost;
+  	@Column(name = "amount")
+	private Integer amount;
 
-	@ManyToOne
-	@JoinColumn(name = "id_product_category")
-	private ProductCategory productCategory;
-	
+  	@Order(1)
 	@Column(name = "date_register")
 	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
 	private LocalDate dateRegister;
 
-	@Transient
-	private Integer qnt;
 
-	/*
-	@Column(name = "status")
-	@Enumerated(value = EnumType.STRING)
-	private StatusLancamento status; */
 }

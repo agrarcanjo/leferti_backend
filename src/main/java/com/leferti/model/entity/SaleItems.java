@@ -24,15 +24,24 @@ public class SaleItems {
 	@Column(name = "id")
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "id_product")
+	@Column(name = "id_product")
+	private Long idProduct;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_product", insertable = false, updatable = false)
 	private Product product;
+
+	@Column(name = "productPrice")
+	private BigDecimal productPrice;
 
 	@Column(name = "amount")
 	private Integer amount;
 
-	@ManyToOne
-	@JoinColumn(name = "id_sale")
+	@Column(name = "id_sale")
+	private Long idSale;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_sale", insertable = false, updatable = false)
 	private Sale sale;
 
 }
