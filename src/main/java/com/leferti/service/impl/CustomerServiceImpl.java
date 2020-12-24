@@ -41,8 +41,14 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional
 	public Customer saveCustomer(Customer customer) {
-		validateEmail(customer.getEmail());
+		validate(customer);
 		return repository.save(customer);
+	}
+
+	private void validate(Customer customer) {
+		if(customer.getName() == null || customer.getName().trim().equals("")){
+			throw new RegraNegocioException("Nome é obrigatório");
+		}
 	}
 
 	@Override

@@ -82,7 +82,7 @@ public class SaleCustomRepository {
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id " +
 						"    inner join leferti.product p on p.id = sl.id_product where date_part('month', s.date_register) = date_part('month',now())), " +
 						" " +
-						"       (select sum(sl.amount) as qntProdutosVendidos " +
+						"       (select CAST(sum(sl.amount) AS INT) as qntProdutosVendidos " +
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on s.id = sl.id_sale), " +
 						" " +
@@ -90,11 +90,11 @@ public class SaleCustomRepository {
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id where s.debt is true), " +
 						" " +
-						"(select count(s.id) as qntVendasFiado " +
+						"(select CAST(count(s.id) AS INT) as qntVendasFiado " +
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id where s.debt is true), " +
 						" " +
-						"(select count(c.id) as qntClientesCadastrados " +
+						"(select CAST(count(c.id) AS INT) as qntClientesCadastrados " +
 						"    from leferti.customer c ), " +
 						" " +
 						"(select sum(s.price) as custoTotais " +
@@ -116,10 +116,10 @@ public class SaleCustomRepository {
 		indicador.setValorVendaTotalBrutaMes((BigDecimal) item[i ++]);
 		indicador.setValorVendaTotalLiquida((BigDecimal) item[i ++]);
 		indicador.setValorVendaTotalLiquidaMes((BigDecimal) item[i ++]);
-		indicador.setQntProdutosVendidos(((BigInteger) item[i ++]).intValue());
+		indicador.setQntProdutosVendidos((Integer) item[i ++]);
 		indicador.setValorTotalFiado((BigDecimal) item[i ++]);
-		indicador.setQntVendasFiado(((BigInteger) item[i ++]).intValue());
-		indicador.setQntClientesCadastrados(((BigInteger) item[i ++]).intValue());
+		indicador.setQntVendasFiado((Integer) item[i ++]);
+		indicador.setQntClientesCadastrados((Integer) item[i ++]);
 		indicador.setCustoTotais((BigDecimal) item[i ++]);
 		indicador.setCustoTotaisMes((BigDecimal) item[i ++]);
 

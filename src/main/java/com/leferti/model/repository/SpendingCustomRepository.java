@@ -44,11 +44,11 @@ public class SpendingCustomRepository {
 		TypedQuery<Spending> q = em.createQuery(query, Spending.class);
 
 		if(!name.trim().equals("")){
-			q.setParameter("name", name + "%");
+			q.setParameter("name", name.toUpperCase() + "%");
 		}
 
 		if(!description.trim().equals("")){
-			q.setParameter("description", description + "%");
+			q.setParameter("description", description.toUpperCase() + "%");
 		}
 
 		if(!month.trim().equals("")){

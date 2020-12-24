@@ -1,6 +1,5 @@
 package com.leferti.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,6 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "product", schema = "leferti")
