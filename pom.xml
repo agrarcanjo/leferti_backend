@@ -12,6 +12,7 @@
 	<artifactId>leferti</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>leferti</name>
+<!--	<packaging>war</packaging>-->
 	<description>um projeto para gerencia de estoque e vendas</description>
 
 	<properties>
@@ -99,4 +100,5 @@
 			</build>
 		</profile>
 	</profiles>
+
 </project>
