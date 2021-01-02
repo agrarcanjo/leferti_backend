@@ -32,4 +32,5 @@ public interface SaleService {
     void switchDebt(Long id, Boolean deby);
 
     BigDecimal findTotalSale();
+
 }

@@ -1,6 +1,7 @@
 package com.leferti.api.resource;
 
 import com.leferti.api.dto.*;
+import com.leferti.api.util.StringUtil;
 import com.leferti.exception.RegraNegocioException;
 import com.leferti.model.entity.Product;
 import com.leferti.model.entity.Spending;
@@ -75,7 +76,7 @@ public class SpendingResource {
 
     private Spending converter( SpendingDTO dto){
         return Spending.builder()
-                .price(!dto.getPrice().equals("") ? new BigDecimal(dto.getPrice()) : null)
+                .price(StringUtil.formatMoney(dto.getPrice()))
                 .description(dto.getDescription())
                 .dateRegister(!dto.getDateRegister().equals("") ? LocalDate.parse(dto.getDateRegister(), DateTimeFormatter.ofPattern("d/MM/yyyy")) : null)
                 .amount(dto.getAmount())

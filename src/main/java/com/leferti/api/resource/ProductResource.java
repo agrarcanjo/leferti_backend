@@ -1,45 +1,39 @@
 package com.leferti.api.resource;
 
 import com.leferti.api.dto.ProductDTO;
+import com.leferti.api.util.StringUtil;
 import com.leferti.exception.RegraNegocioException;
+import com.leferti.exception.ResourceException;
 import com.leferti.model.entity.Product;
+import com.leferti.model.repository.ProductCustomRepository;
 import com.leferti.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductResource {
     private final ProductService service;
+    private final ProductCustomRepository productCustomRepository;
 
     @GetMapping
-    public ResponseEntity find(
-            @RequestParam(value ="product" , required = false) String find,
-            @RequestParam(value ="description" , required = false) String description
+    public ResponseEntity<Page<Product>> find(
+            @RequestParam(value ="product" , required = false) String product,
+            @RequestParam(value ="description" , required = false) String description,
+            @RequestParam(value ="page" , required = false, defaultValue = "0") Integer page
     ) {
-        Product productFilter = new Product();
+        Page<Product> products = productCustomRepository.findAllWithFilters(product, description, page);
 
-        if(find!=null && !find.isEmpty() && find.matches("^[0-9]*$")){
-            productFilter.setId(Long.parseLong(find));
-        }else{
-            productFilter.setName(find);
-        }
-
-        if(description!=null && !description.trim().equals(""))
-            productFilter.setDescription(description);
-
-        List<Product> product = service.find(productFilter);
-        if(product.isEmpty()) {
-            return ResponseEntity.badRequest().body("Produto não encontrado.");
-        }else
-            return ResponseEntity.ok(product);
+        if(!products.isEmpty())
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        else
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Produto não encontrado");
     }
 
     @PostMapping
@@ -66,8 +60,8 @@ public class ProductResource {
         product.setId(dto.getId());
         product.setDescription(dto.getDescription());
         product.setName(dto.getName());
-        product.setPrice(new BigDecimal(dto.getPrice()));
-        product.setCost(new BigDecimal(dto.getCost()));
+        product.setPrice(StringUtil.formatMoney(dto.getPrice()));
+        product.setCost(StringUtil.formatMoney(dto.getCost()));
         product.setDateRegister(LocalDate.now());
 
         return product;

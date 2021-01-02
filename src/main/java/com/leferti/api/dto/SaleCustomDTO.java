@@ -17,4 +17,5 @@ public class SaleCustomDTO {
     private Long idCustomer;
     private String dateRegister;
     private Boolean debt;
+
 }

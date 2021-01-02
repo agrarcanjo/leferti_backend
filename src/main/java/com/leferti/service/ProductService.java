@@ -18,4 +18,5 @@ public interface ProductService {
 
     @Transactional
     void delete(Product product);
+
 }

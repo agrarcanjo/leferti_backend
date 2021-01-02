@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class SaleCustomRepository {
@@ -21,7 +21,43 @@ public class SaleCustomRepository {
  		this.em = em;
 	}
 
-	public List<SaleCustomDTO> findByCustomCustomerName(String customerName, Boolean isDebt, String dateFilter) {
+	public Long countSalesByFilter(String customerName, Boolean isDebt, String dateFilter ) {
+		String query = "select count(s.id) " +
+				"from Sale s " +
+				"inner join Customer c on s.idCustomer = c.id ";
+		String condiction = "where ";
+		if(!customerName.trim().equals("")){
+			query+= condiction + "upper(c.name) like :customerName ";
+			condiction = "and ";
+		}
+
+		if(isDebt){
+			query+= condiction + "s.debt= :isDebt ";
+			condiction= "and ";
+		}
+
+		if(dateFilter!=null && !dateFilter.trim().equals("")){
+			query+= condiction + "s.dateRegister = :date ";
+		}
+
+		TypedQuery<Long> q = (TypedQuery<Long>) em.createQuery(query);
+
+		if(customerName!=null && !customerName.trim().equals("")){
+			q.setParameter("customerName" , customerName.toUpperCase() + "%");
+		}
+
+		if(isDebt){
+			q.setParameter("isDebt" , isDebt);
+		}
+
+		if(!dateFilter.trim().equals("")){
+			q.setParameter("date", LocalDate.parse(dateFilter, DateTimeFormatter.ofPattern("d/MM/yyyy")));
+		}
+
+		return q.getSingleResult();
+	}
+
+	public List<SaleCustomDTO> findByCustomCustomerName(String customerName, Boolean isDebt, String dateFilter, String dateFilterEnd, Integer pageNumber) {
  		String query = "select new com.leferti.api.dto.SaleCustomDTO(s.id as idSale, s.total, s.discount, c.name as customerName, c.phone, c.id as idCustomer, " +
 				"TO_CHAR(s.dateRegister, 'dd/MM/yyyy') as dateRegister, s.debt) " +
 				"from Sale s " +
@@ -37,8 +73,12 @@ public class SaleCustomRepository {
  			condiction= "and ";
 		}
 
- 		if(dateFilter!=null && !dateFilter.trim().equals("")){
- 			query+= condiction + "s.dateRegister = :date ";
+ 		if(Objects.nonNull(dateFilterEnd) && !dateFilterEnd.trim().equals("")){
+			query+= condiction + "s.dateRegister BETWEEN :date and :dateEnd ";
+		}else{
+			if(Objects.nonNull(dateFilter) && !dateFilter.trim().equals("")){
+				query+= condiction + "s.dateRegister = :date ";
+			}
 		}
 
  		query+="order by s.dateRegister desc, " +
@@ -46,7 +86,7 @@ public class SaleCustomRepository {
 
 		TypedQuery<SaleCustomDTO> q = (TypedQuery<SaleCustomDTO>) em.createQuery(query);
 
-		if(customerName!=null && !customerName.trim().equals("")){
+		if(!customerName.trim().equals("")){
 			q.setParameter("customerName" , customerName.toUpperCase() + "%");
 		}
 
@@ -54,12 +94,18 @@ public class SaleCustomRepository {
 			q.setParameter("isDebt" , isDebt);
 		}
 
-		if(!dateFilter.trim().equals("")){
-			q.setParameter("date", LocalDate.parse(dateFilter, DateTimeFormatter.ofPattern("d/MM/yyyy")));
+		if(Objects.nonNull(dateFilterEnd) && !dateFilterEnd.trim().equals("")){
+			q.setParameter("date", LocalDate.parse(dateFilter, DateTimeFormatter.ofPattern("d/M/yyyy")));
+			q.setParameter("dateEnd", LocalDate.parse(dateFilterEnd, DateTimeFormatter.ofPattern("d/M/yyyy")));
+		}else{
+			if(!dateFilter.trim().equals("")) {
+				q.setParameter("date", LocalDate.parse(dateFilter, DateTimeFormatter.ofPattern("d/M/yyyy")));
+			}
 		}
 
 		return q.getResultList();
 	}
+
 
 	public IndicatorsCustomDTO findIndicators(){
  		String query =

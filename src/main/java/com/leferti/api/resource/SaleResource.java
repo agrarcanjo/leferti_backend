@@ -58,7 +58,7 @@ public class SaleResource {
         return Sale.builder().idCustomer(saleDTO.getCustomer())
                 .total(!saleDTO.getTotal().equals("") ? new BigDecimal(saleDTO.getTotal()): null)
                 .discount(!saleDTO.getDiscount().equals("") ? new BigDecimal(saleDTO.getDiscount()) : new BigDecimal(0))
-                .dateRegister(!saleDTO.getRegistrationDate().equals("") ? LocalDate.parse(saleDTO.getRegistrationDate(), DateTimeFormatter.ofPattern("d/MM/yyyy HH:mm")) : null)
+                .dateRegister(!saleDTO.getRegistrationDate().equals("") ? LocalDate.parse(saleDTO.getRegistrationDate(), DateTimeFormatter.ofPattern("d/M/yyyy HH:mm")) : null)
                 .debt(saleDTO.getDebt()!=null ? saleDTO.getDebt() : false)
                 .build();
     }
@@ -67,14 +67,16 @@ public class SaleResource {
     public ResponseEntity find(
             @RequestParam(value ="customer" , required = false) String customer,
             @RequestParam(value ="isDebt" , required = false) Boolean isDebt,
-            @RequestParam(value ="dateFilter" , required = false) String dateFilter
+            @RequestParam(value ="dateFilter" , required = false) String dateFilter,
+            @RequestParam(value ="dateFilterEnd" , required = false) String dateFilterEnd,
+            @RequestParam(value ="page" , required = false) Integer page
     ) {
         List<SaleCustomDTO> sales = saleCustomRepository.
-                findByCustomCustomerName(customer, isDebt, dateFilter);
-        if(sales.isEmpty()) {
-            return ResponseEntity.badRequest().body("Venda não encontrar para o Cliente");
-        }else {
+                findByCustomCustomerName(customer, isDebt, dateFilter, dateFilterEnd, page);
+        if(!sales.isEmpty()){
             return ResponseEntity.ok(sales);
+        } else{
+            return ResponseEntity.badRequest().body("Nenhuma venda encontrada!");
         }
     }
 
@@ -82,7 +84,7 @@ public class SaleResource {
     public ResponseEntity findSaleItems(@PathVariable("id") Long id ) {
         List<SaleItemCustomIDTO> saleItems = serviceSaleItems.findSaleItemsBySale(id);
         if(saleItems.isEmpty()) {
-            return ResponseEntity.badRequest().body("Itens não encontrar para o Cliente");
+            return ResponseEntity.badRequest().body("Itens não encontrados para o Cliente");
         }else {
             return ResponseEntity.ok(saleItems);
         }
