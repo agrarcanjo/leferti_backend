@@ -42,14 +42,10 @@ public class ProductCustomRepository  {
 	private Predicate getPredicate(String product, String description, Root<Product> productRoot) {
 		List<Predicate> predicates = new ArrayList<>();
 		if(Objects.nonNull(product) && !product.isEmpty()) {
-			if (product.matches("^[0-9]*$")) {
-				predicates.add(cb.equal(productRoot.get("id"), product));
-			} else {
-				predicates.add(cb.like(cb.upper(productRoot.get("name")), "%" + product + "%"));
-			}
+				predicates.add(cb.like(cb.upper(productRoot.get("name")),  product.toUpperCase() + "%"));
 		}
 		if(Objects.nonNull(description)){
-			predicates.add(cb.like(cb.upper(productRoot.get("description")), "%" + description + "%"));
+			predicates.add(cb.like(cb.upper(productRoot.get("description")), description.toUpperCase() + "%"));
 		}
 		return cb.and(predicates.toArray(new Predicate[0]));
 	}
