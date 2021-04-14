@@ -56,7 +56,7 @@ public class SaleResource {
 
     private Sale converter( SaleDTO saleDTO){
         return Sale.builder().idCustomer(saleDTO.getCustomer())
-                .total(!saleDTO.getTotal().equals("") ? new BigDecimal(saleDTO.getTotal()): null)
+                .total(!saleDTO.getTotal().equals("") && !saleDTO.getTotal().equals("NaN") ? new BigDecimal(saleDTO.getTotal()): null)
                 .discount(!saleDTO.getDiscount().equals("") ? new BigDecimal(saleDTO.getDiscount()) : new BigDecimal(0))
                 .dateRegister(!saleDTO.getRegistrationDate().equals("") ? LocalDate.parse(saleDTO.getRegistrationDate(), DateTimeFormatter.ofPattern("d/M/yyyy HH:mm")) : null)
                 .debt(saleDTO.getDebt()!=null ? saleDTO.getDebt() : false)

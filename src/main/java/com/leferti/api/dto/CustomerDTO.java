@@ -14,4 +14,5 @@ public class CustomerDTO {
 	private String cpf;
 	private String phone;
 	private Long id;
+	private String password;
 }

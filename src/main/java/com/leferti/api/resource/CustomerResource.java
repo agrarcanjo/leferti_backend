@@ -9,10 +9,12 @@ import com.leferti.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -21,16 +23,17 @@ import java.util.Optional;
 public class CustomerResource {
 
 	private final CustomerService service;
-	//private final LancamentoService lancamentoService;
 
 	@PostMapping("/auth")
 	public ResponseEntity auth(@RequestBody CustomerDTO dto ) {
-		try {
-			Customer customerAutenticado = service.auth(dto.getEmail(), "123");
-			return ResponseEntity.ok(customerAutenticado);
-		}catch (ErroAutenticacao e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
+			//Customer customerAutenticado = service.auth(dto.getEmail(), dto.getPass());
+			if (Objects.nonNull(dto.getEmail()) && dto.getEmail().equals("gloria")
+					&& Objects.nonNull(dto.getPassword()) && dto.getPassword().equals("leferti")) {
+				Customer customer = Customer.builder().id(1L).email(dto.getEmail()).name("gloria").build();
+				return ResponseEntity.ok().header( "authorization","kdlsADklalsSDFmvclkDASLdADKAUEJNCNAalaksodkx").body(customer);
+			} else {
+				return ResponseEntity.badRequest().body("Usuário não encontrado");
+			}
 	}
 
 	@GetMapping
