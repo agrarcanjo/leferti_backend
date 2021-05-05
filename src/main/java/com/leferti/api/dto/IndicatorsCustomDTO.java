@@ -10,6 +10,7 @@ import javax.persistence.EntityResult;
 import javax.persistence.FieldResult;
 import javax.persistence.SqlResultSetMapping;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @Builder
@@ -20,10 +21,10 @@ public class IndicatorsCustomDTO {
     private BigDecimal valorVendaTotalBrutaMes;
     private BigDecimal valorVendaTotalLiquida;
     private BigDecimal valorVendaTotalLiquidaMes;
-    private Integer qntProdutosVendidos;
+    private BigInteger qntProdutosVendidos;
     private BigDecimal valorTotalFiado;
-    private Integer qntVendasFiado;
-    private Integer qntClientesCadastrados;
+    private BigInteger qntVendasFiado;
+    private BigInteger qntClientesCadastrados;
     private BigDecimal custoTotais;
     private BigDecimal custoTotaisMes;
 

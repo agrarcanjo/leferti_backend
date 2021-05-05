@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SaleCustomRepository {
 
 	public List<SaleCustomDTO> findByCustomCustomerName(String customerName, Boolean isDebt, String dateFilter, String dateFilterEnd, Integer pageNumber) {
  		String query = "select new com.leferti.api.dto.SaleCustomDTO(s.id as idSale, s.total, s.discount, c.name as customerName, c.phone, c.id as idCustomer, " +
-				"TO_CHAR(s.dateRegister, 'dd/MM/yyyy') as dateRegister, s.debt) " +
+				"DATE_FORMAT(s.dateRegister, '%d/%m/%Y') as dateRegister, s.debt) " +
 				"from Sale s " +
 				"inner join Customer c on s.idCustomer = c.id ";
 		String condiction = "where ";
@@ -116,7 +117,7 @@ public class SaleCustomRepository {
 						" " +
 						"(select sum(s.total - (s.discount)) " +
 						" from leferti.sale s " +
-						"          inner join leferti.sale_items sl on sl.id_sale = s.id where date_part('month', s.date_register) = date_part('month',now()))  as valorVendaTotalBrutaMes, " +
+						"          inner join leferti.sale_items sl on sl.id_sale = s.id where MONTH(s.date_register) = MONTH(now()))  as valorVendaTotalBrutaMes, " +
 						" " +
 						"(select sum(s.total - (s.discount) - (p.cost * sl.amount)) as valorVendaTotalLiquita " +
 						"    from leferti.sale s " +
@@ -126,9 +127,9 @@ public class SaleCustomRepository {
 						"(select sum(s.total - (s.discount) - (p.cost * sl.amount)) as valorVendaTotalLiquitaMes " +
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id " +
-						"    inner join leferti.product p on p.id = sl.id_product where date_part('month', s.date_register) = date_part('month',now())), " +
+						"    inner join leferti.product p on p.id = sl.id_product where MONTH(s.date_register) = MONTH(now())), " +
 						" " +
-						"       (select CAST(sum(sl.amount) AS INT) as qntProdutosVendidos " +
+						"       (select CAST(sum(sl.amount) AS UNSIGNED) as qntProdutosVendidos " +
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on s.id = sl.id_sale), " +
 						" " +
@@ -136,18 +137,18 @@ public class SaleCustomRepository {
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id where s.debt is true), " +
 						" " +
-						"(select CAST(count(s.id) AS INT) as qntVendasFiado " +
+						"(select CAST(count(s.id) AS UNSIGNED) as qntVendasFiado " +
 						"    from leferti.sale s " +
 						"    inner join leferti.sale_items sl on sl.id_sale = s.id where s.debt is true), " +
 						" " +
-						"(select CAST(count(c.id) AS INT) as qntClientesCadastrados " +
+						"(select CAST(count(c.id) AS UNSIGNED) as qntClientesCadastrados " +
 						"    from leferti.customer c ), " +
 						" " +
 						"(select sum(s.price) as custoTotais " +
 						"    from leferti.spending s ), " +
 						" " +
 						"(select sum(s.price) as custoTotaisMes " +
-						"    from leferti.spending s where date_part('month', s.date_register) = date_part('month',now())) " +
+						"    from leferti.spending s where MONTH(s.date_register) = MONTH(now())) " +
 						" ;";
 
 
@@ -162,10 +163,10 @@ public class SaleCustomRepository {
 		indicador.setValorVendaTotalBrutaMes((BigDecimal) item[i ++]);
 		indicador.setValorVendaTotalLiquida((BigDecimal) item[i ++]);
 		indicador.setValorVendaTotalLiquidaMes((BigDecimal) item[i ++]);
-		indicador.setQntProdutosVendidos((Integer) item[i ++]);
+		indicador.setQntProdutosVendidos((BigInteger) item[i ++]);
 		indicador.setValorTotalFiado((BigDecimal) item[i ++]);
-		indicador.setQntVendasFiado((Integer) item[i ++]);
-		indicador.setQntClientesCadastrados((Integer) item[i ++]);
+		indicador.setQntVendasFiado((BigInteger) item[i ++]);
+		indicador.setQntClientesCadastrados((BigInteger) item[i ++]);
 		indicador.setCustoTotais((BigDecimal) item[i ++]);
 		indicador.setCustoTotaisMes((BigDecimal) item[i ++]);
 

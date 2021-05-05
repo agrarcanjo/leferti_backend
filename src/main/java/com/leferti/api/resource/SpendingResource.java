@@ -78,7 +78,7 @@ public class SpendingResource {
         return Spending.builder()
                 .price(StringUtil.formatMoney(dto.getPrice()))
                 .description(dto.getDescription())
-                .dateRegister(!dto.getDateRegister().equals("") ? LocalDate.parse(dto.getDateRegister(), DateTimeFormatter.ofPattern("d/MM/yyyy")) : null)
+                .dateRegister(!dto.getDateRegister().equals("") ? LocalDate.parse(dto.getDateRegister(), DateTimeFormatter.ofPattern("d/M/yyyy")) : null)
                 .amount(dto.getAmount())
                 .name(dto.getName())
                 .build();
